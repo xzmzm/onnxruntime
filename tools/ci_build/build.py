@@ -982,6 +982,8 @@ def generate_build_tree(
         "-Donnxruntime_USE_XNNPACK=" + ("ON" if args.use_xnnpack else "OFF"),
         "-Donnxruntime_USE_WEBNN=" + ("ON" if args.use_webnn else "OFF"),
         "-Donnxruntime_USE_CANN=" + ("ON" if args.use_cann else "OFF"),
+        "-Donnxruntime_USE_AVX=ON",
+        "-Donnxruntime_USE_AVX2=ON",
     ]
 
     # By default on Windows we currently support only cross compiling for ARM/ARM64
