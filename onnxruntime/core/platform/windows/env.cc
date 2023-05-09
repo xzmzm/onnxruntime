@@ -142,7 +142,7 @@ class WindowsThread : public EnvThread {
     std::wostringstream oss;
     oss << name_prefix << "-" << p->index;
     // Ignore the error
-    (void)SetThreadDescription(GetCurrentThread(), oss.str().c_str());
+    // (void)SetThreadDescription(GetCurrentThread(), oss.str().c_str());
 
     unsigned ret = 0;
     ORT_TRY {
@@ -372,7 +372,7 @@ Status WindowsEnv::MapFileIntoMemory(_In_z_ const ORTCHAR_T* file_path,
                            " - ", std::system_category().message(error_code));
   }
 
-#if NTDDI_VERSION >= NTDDI_WIN10_RS5 && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+#if 0 // NTDDI_VERSION >= NTDDI_WIN10_RS5 && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
   wil::unique_hfile file_mapping_handle{
       CreateFileMapping2(file_handle.get(),
                          nullptr,
