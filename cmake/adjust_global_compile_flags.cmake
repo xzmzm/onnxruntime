@@ -283,9 +283,9 @@ if (MSVC)
   endif()
 
   if (NOT GDK_PLATFORM)
-    add_compile_definitions(WINAPI_FAMILY=100) # Desktop app
-    message("Building ONNX Runtime for Windows 10 and newer")
-    add_compile_definitions(WINVER=0x0A00 _WIN32_WINNT=0x0A00 NTDDI_VERSION=0x0A000000)
+    # add_compile_definitions(WINAPI_FAMILY=100) # Desktop app
+    message("Building ONNX Runtime for Windows 7 and newer")
+    add_compile_definitions(WINVER=0x0601 _WIN32_WINNT=0x0601 NTDDI_VERSION=0x06010000)
   endif()
   if (onnxruntime_ENABLE_LTO AND NOT onnxruntime_USE_CUDA)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Gw /GL")

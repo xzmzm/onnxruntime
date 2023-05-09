@@ -262,8 +262,15 @@ PIDType WindowsEnv::GetSelfPid() const {
 }
 
 Status WindowsEnv::GetFileLength(_In_z_ const ORTCHAR_T* file_path, size_t& length) const {
-  wil::unique_hfile file_handle{
+    
+#if WINVER >= _WIN32_WINNT_WIN8
+    wil::unique_hfile file_handle{
       CreateFile2(file_path, FILE_READ_ATTRIBUTES, FILE_SHARE_READ, OPEN_EXISTING, NULL)};
+#else
+    wil::unique_hfile file_handle{
+        CreateFileW(file_path, FILE_READ_ATTRIBUTES, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
+#endif
+
   if (file_handle.get() == INVALID_HANDLE_VALUE) {
     const auto error_code = GetLastError();
     return ORT_MAKE_STATUS(ONNXRUNTIME, FAIL, "open file ", ToUTF8String(Basename(file_path)), " fail, errcode = ", error_code, " - ", std::system_category().message(error_code));
@@ -309,8 +316,13 @@ Status WindowsEnv::ReadFileIntoBuffer(_In_z_ const ORTCHAR_T* const file_path, c
   ORT_RETURN_IF_NOT(file_path, "file_path == nullptr");
   ORT_RETURN_IF_NOT(offset >= 0, "offset < 0");
   ORT_RETURN_IF_NOT(length <= buffer.size(), "length > buffer.size()");
+#if WINVER >= _WIN32_WINNT_WIN8
   wil::unique_hfile file_handle{
       CreateFile2(file_path, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, NULL)};
+#else
+    wil::unique_hfile file_handle{
+        CreateFileW(file_path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
+#endif
   if (file_handle.get() == INVALID_HANDLE_VALUE) {
     const auto error_code = GetLastError();
     return ORT_MAKE_STATUS(ONNXRUNTIME, FAIL, "open file ", ToUTF8String(Basename(file_path)), " fail, errcode = ", error_code, " - ", std::system_category().message(error_code));
@@ -362,8 +374,13 @@ Status WindowsEnv::MapFileIntoMemory(_In_z_ const ORTCHAR_T* file_path,
     return Status::OK();
   }
 
+#if WINVER >= _WIN32_WINNT_WIN8
   wil::unique_hfile file_handle{
       CreateFile2(file_path, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, NULL)};
+#else
+    wil::unique_hfile file_handle{
+        CreateFileW(file_path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
+#endif
   if (file_handle.get() == INVALID_HANDLE_VALUE) {
     const auto error_code = GetLastError();
     return ORT_MAKE_STATUS(ONNXRUNTIME, FAIL,
@@ -562,6 +579,7 @@ common::Status WindowsEnv::GetCanonicalPath(
     PathString& canonical_path) const {
   // adapted from MSVC STL std::filesystem::canonical() implementation
   // https://github.com/microsoft/STL/blob/ed3cbf36416a385828e7a5987ca52cb42882d84b/stl/inc/filesystem#L2986
+#if WINVER >= _WIN32_WINNT_WIN8
   CREATEFILE2_EXTENDED_PARAMETERS param;
   memset(&param, 0, sizeof(param));
   param.dwSize = sizeof(CREATEFILE2_EXTENDED_PARAMETERS);
@@ -572,6 +590,16 @@ common::Status WindowsEnv::GetCanonicalPath(
       FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
       OPEN_EXISTING,
       &param)};
+#else
+    wil::unique_hfile file_handle{CreateFileW(
+        path.c_str(),
+        FILE_READ_ATTRIBUTES,
+        FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+        nullptr,
+        OPEN_EXISTING,
+        FILE_FLAG_BACKUP_SEMANTICS,
+        nullptr)};
+#endif
 
   if (file_handle.get() == INVALID_HANDLE_VALUE) {
     const auto error_code = GetLastError();
