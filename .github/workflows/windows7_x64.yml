@@ -26,9 +26,9 @@ jobs:
       - name: 'Build and Test'
         working-directory: C:\onnxruntime
         run: |
-          python C:/onnxruntime/tools/ci_build/build.py --build_dir C:\onnxruntime\build\windows_x86 --x86 --enable_msvc_static_runtime --build_shared_lib --enable_onnx_tests --ms_experimental --use_dml --cmake_generator "Visual Studio 17 2022" --config Release --compile_no_warning_as_error --enable_lto --disable_rtti --enable_wcos --parallel --cmake_extra_defines CMAKE_SYSTEM_VERSION=10.0.19041.0
+          python C:/onnxruntime/tools/ci_build/build.py --build_dir C:\onnxruntime\build\windows_x64 --enable_msvc_static_runtime --build_shared_lib --enable_onnx_tests --ms_experimental --use_dml --cmake_generator "Visual Studio 17 2022" --config Release --compile_no_warning_as_error --enable_lto --disable_rtti --enable_wcos --parallel --cmake_extra_defines CMAKE_SYSTEM_VERSION=10.0.19041.0
       - name: 'Upload Release Files'
         uses: actions/upload-artifact@v3
         with:
           name: release_files
-          path: C:\onnxruntime\build\windows_x86\Release\Release
+          path: C:\onnxruntime\build\windows_x64\Release\Release
