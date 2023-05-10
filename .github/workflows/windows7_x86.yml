@@ -14,6 +14,8 @@ jobs:
         run: |
           mkdir C:\onnxruntime
           git clone https://github.com/xzmzm/onnxruntime.git C:\onnxruntime
+          C:\
+          cd C:\onnxruntime
           git checkout windows7
       - uses: actions/setup-python@v3
         with:
