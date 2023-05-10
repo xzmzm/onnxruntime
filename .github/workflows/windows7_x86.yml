@@ -18,4 +18,4 @@ jobs:
           architecture: 'x64'
       - name: 'Build and Test'
         run: |
-          python ${{ github.workspace }}/tools/ci_build/build.py --build_dir build\windows_x86 --x86 --enable_msvc_static_runtime --build_shared_lib --enable_onnx_tests --ms_experimental --use_dml --cmake_generator "Visual Studio 17 2022" --update --config Release --enable_lto --disable_rtti --enable_wcos --cmake_extra_defines CMAKE_SYSTEM_VERSION=10.0.19041.0
+          python ${{ github.workspace }}/tools/ci_build/build.py --build_dir build\windows_x86 --x86 --enable_msvc_static_runtime --build_shared_lib --enable_onnx_tests --ms_experimental --use_dml --cmake_generator "Visual Studio 17 2022" --config Release --enable_lto --disable_rtti --enable_wcos --cmake_extra_defines CMAKE_SYSTEM_VERSION=10.0.19041.0
