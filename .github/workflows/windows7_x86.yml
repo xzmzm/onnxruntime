@@ -9,23 +9,27 @@ jobs:
   build:
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
+      - name: 'Git Clone'
+        shell: cmd
+        run: |
+          mkdir C:\onnxruntime
+          git clone https://github.com/xzmzm/onnxruntime.git C:\onnxruntime
+          git checkout windows7
       - uses: actions/setup-python@v3
         with:
           python-version: '3.8.x'
           architecture: 'x64'
       - run: Get-PSDrive
-      - name: 'Delete .git'
-        shell: cmd
-        run: |
-          rmdir /s /q ${{ github.workspace }}\.git
+      # - name: 'Delete .git'
+        # shell: cmd
+        # run: |
+          # rmdir /s /q ${{ github.workspace }}\.git
       - name: 'Build and Test'
+        working-directory: C:/onnxruntime
         run: |
-          python ${{ github.workspace }}/tools/ci_build/build.py --build_dir build\windows_x86 --x86 --enable_msvc_static_runtime --build_shared_lib --enable_onnx_tests --ms_experimental --use_dml --cmake_generator "Visual Studio 17 2022" --config Release --skip_submodule_sync --enable_lto --disable_rtti --enable_wcos --cmake_extra_defines CMAKE_SYSTEM_VERSION=10.0.19041.0
+          python C:/onnxruntime/tools/ci_build/build.py --build_dir C:\onnxruntime\build\windows_x86 --x86 --enable_msvc_static_runtime --build_shared_lib --enable_onnx_tests --ms_experimental --use_dml --cmake_generator "Visual Studio 17 2022" --config Release --enable_lto --disable_rtti --enable_wcos --cmake_extra_defines CMAKE_SYSTEM_VERSION=10.0.19041.0
       - name: 'Upload Release Files'
         uses: actions/upload-artifact@v3
         with:
           name: release_files
-          path: ${{ github.workspace }}\build\windows_x86\Release\Release
+          path: C:\onnxruntime\build\windows_x86\Release\Release
