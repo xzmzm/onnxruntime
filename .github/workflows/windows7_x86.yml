@@ -1,9 +1,9 @@
 name: "Windows 7 x86"
 on:
+  push:
+    branches:
+      - windows7
   workflow_dispatch:
-  # push:
-    # branches:
-      # - windows7
 
 jobs:
   build:

@@ -3,7 +3,11 @@
 # This workflow was copied from the link above.
 
 name: "Validate Gradle Wrapper"
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   validation:
