@@ -31,4 +31,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: release_files_x86
-          path: C:\onnxruntime\build\windows_x86\Release\Release
+          path: |
+            C:\onnxruntime\build\windows_x86\Release\Release
+            !C:\onnxruntime\build\windows_x86\Release\Release\onnxruntime_providers.lib
+            !C:\onnxruntime\build\windows_x86\Release\Release\onnxruntime_optimizer.lib
+            !C:\onnxruntime\build\windows_x86\Release\Release\onnxruntime_framework.lib            
+            !C:\onnxruntime\build\windows_x86\Release\Release\onnxruntime_session.lib                        
