@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-2022
+    runs-on: windows-2019
     steps:
       - name: 'Git Clone'
         shell: cmd
@@ -26,7 +26,7 @@ jobs:
       - name: 'Build and Test'
         working-directory: C:\onnxruntime
         run: |
-          python C:/onnxruntime/tools/ci_build/build.py --build_dir C:\onnxruntime\build\windows_x86 --update --build --config Release --cmake_generator "Visual Studio 17 2022" --x86 --cmake_extra_defines CMAKE_SYSTEM_VERSION:STRING=10.0 --cmake_extra_defines CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION:STRING=10.0 --build_shared_lib --enable_msvc_static_runtime --msvc_toolset 14.35.32215 --skip_tests
+          python C:/onnxruntime/tools/ci_build/build.py --build_dir C:\onnxruntime\build\windows_x86 --x86 --update --build --skip_tests --enable_msvc_static_runtime --build_shared_lib --ms_experimental --cmake_generator "Visual Studio 16 2019" --config Release --compile_no_warning_as_error --enable_lto --disable_rtti --cmake_extra_defines CMAKE_SYSTEM_VERSION=10.0.19041.0
       - name: 'Upload Release Files'
         uses: actions/upload-artifact@v3
         with:
