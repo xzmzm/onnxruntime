@@ -21,6 +21,12 @@ from benchmark_helper import Precision, create_onnxruntime_session, prepare_envi
 
 logger = logging.getLogger("")
 
+PROVIDERS = {
+    "cpu": "CPUExecutionProvider",
+    "cuda": "CUDAExecutionProvider",
+    "rocm": "ROCMExecutionProvider",
+}
+
 
 def parse_arguments(argv=None):
     parser = argparse.ArgumentParser()
@@ -108,6 +114,24 @@ def parse_arguments(argv=None):
     parser.set_defaults(use_specific_logits_processor=False)
 
     parser.add_argument(
+        "-v",
+        "--use_vocab_mask",
+        required=False,
+        action="store_true",
+        help="Use vocab_mask as an extra graph input to enable specific logits processing",
+    )
+    parser.set_defaults(use_vocab_mask=False)
+
+    parser.add_argument(
+        "-u",
+        "--use_prefix_vocab_mask",
+        required=False,
+        action="store_true",
+        help="Use prefix_vocab_mask as an extra graph input to enable specific logits processing",
+    )
+    parser.set_defaults(use_prefix_vocab_mask=False)
+
+    parser.add_argument(
         "-w",
         "--overwrite",
         required=False,
@@ -176,13 +200,23 @@ def parse_arguments(argv=None):
         help="Produce beam search model with chained encdecinit and decoder.",
     )
 
-    parser.add_argument("--no_repeat_ngram_size", type=int, default=3, help="default to 3")
+    parser.add_argument("--no_repeat_ngram_size", type=int, default=0, help="default to 0")
 
     parser.add_argument(
         "--state_dict_path",
         type=str,
         default="",
         help="filepath to load pre-trained model with custom state dictionary (e.g. pytorch_model.bin)",
+    )
+
+    parser.add_argument(
+        "-r",
+        "--provider",
+        required=False,
+        type=str,
+        default="cpu",
+        choices=list(PROVIDERS.keys()),
+        help="Provider to benchmark. Default is CPUExecutionProvider.",
     )
 
     args = parser.parse_args(argv)
@@ -208,6 +242,7 @@ def export_onnx_models(
     quantize_per_channel: bool = False,
     quantize_reduce_range: bool = False,
     state_dict_path: str = "",
+    provider: str = "cpu",
 ):
     device = torch.device("cuda:0" if use_gpu else "cpu")
 
@@ -270,6 +305,7 @@ def export_onnx_models(
                         use_external_data_format,
                         auto_mixed_precision=not disable_auto_mixed_precision,
                         use_gpu=use_gpu,
+                        provider=provider,
                     )
                     onnx_path = output_path
 
@@ -294,7 +330,7 @@ def export_onnx_models(
         ort_session = create_onnxruntime_session(
             output_path,
             use_gpu=use_gpu,
-            provider=["CUDAExecutionProvider", "CPUExecutionProvider"] if use_gpu else ["CPUExecutionProvider"],
+            provider=provider,
         )
 
         with torch.no_grad():
@@ -342,6 +378,8 @@ def main(argv=None):
         args.quantize_embedding_layer,
         args.quantize_per_channel,
         args.quantize_reduce_range,
+        args.state_dict_path,
+        args.provider,
     )
 
     if args.chain_model:
