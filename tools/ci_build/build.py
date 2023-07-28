@@ -993,8 +993,8 @@ def generate_build_tree(
         "-Donnxruntime_USE_CANN=" + ("ON" if args.use_cann else "OFF"),
         "-Donnxruntime_USE_TRITON_KERNEL=" + ("ON" if args.use_triton_kernel else "OFF"),
         "-Donnxruntime_DISABLE_FLOAT8_TYPES=" + ("ON" if disable_float8_types else "OFF"),
-        "-Donnxruntime_USE_AVX=ON",
-        "-Donnxruntime_USE_AVX2=ON",
+        # "-Donnxruntime_USE_AVX=ON",
+        # "-Donnxruntime_USE_AVX2=ON",
     ]
 
     # By default on Windows we currently support only cross compiling for ARM/ARM64
