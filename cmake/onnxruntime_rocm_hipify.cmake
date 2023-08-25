@@ -37,6 +37,10 @@ set(contrib_ops_excluded_files
   "bert/packed_attention.cc"
   "bert/packed_attention_impl.h"
   "bert/packed_attention_impl.cu"
+  "bert/packed_multihead_attention.h"
+  "bert/packed_multihead_attention.cc"
+  "bert/packed_multihead_attention_impl.h"
+  "bert/packed_multihead_attention_impl.cu"
   "diffusion/group_norm.cc"
   "diffusion/group_norm_impl.cu"
   "diffusion/group_norm_impl.h"
@@ -197,6 +201,10 @@ set(training_ops_excluded_files
   "reduction/reduction_ops.cc"  # no double type support
   "cuda_training_kernels.cc"
   "cuda_training_kernels.h"
+  "nn/conv_shared.cc"
+  "nn/conv_shared.h"
+  "nn/conv_transpose_grad.cc"
+  "nn/conv_transpose_grad.h"
 )
 
 function(auto_set_source_files_hip_language)
