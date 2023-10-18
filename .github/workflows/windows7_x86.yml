@@ -13,7 +13,7 @@ jobs:
         shell: cmd
         run: |
           mkdir C:\onnxruntime
-          git clone -b windows7 --single-branch https://github.com/xzmzm/onnxruntime.git C:\onnxruntime
+          git clone -b windows7 --depth 1 --single-branch https://github.com/xzmzm/onnxruntime.git C:\onnxruntime
       - uses: actions/setup-python@v3
         with:
           python-version: '3.8.x'
